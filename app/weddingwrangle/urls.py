@@ -24,7 +24,12 @@ from django.views.generic import TemplateView
 app_name = "weddingwrangle"
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", views.HomePage.as_view(), name="home"),
+    path(
+        "", 
+        TemplateView.as_view(template_name="weddingwrangle/wedding_details.html"),
+        name="details",
+    ),
+    path("home/", views.HomePage.as_view(), name="home"),
     path("guests/", views.GuestList.as_view(), name="guest_list"),
     path("guests/create/", views.GuestCreate.as_view(), name="guest_create"),
     path("guests/export/csv/", views.export_csv, name="guest_export_csv"),
@@ -72,11 +77,6 @@ urlpatterns = [
         "rsvp/<str:rsvp_link>/partner/",
         views.RSVPPartner.as_view(),
         name="rsvp_partner",
-    ),
-    path(
-        "details/", 
-        TemplateView.as_view(template_name="weddingwrangle/wedding_details.html"),
-        name="details",
     ),
     path("accounts/", include("django.contrib.auth.urls")),
     # https://stackoverflow.com/a/63445257/3161714
