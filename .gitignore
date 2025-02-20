@@ -1,5 +1,4 @@
 *.sqlite3
-pyproject.toml
 .env
 .env.dev
 .env.prod

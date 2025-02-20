@@ -78,6 +78,7 @@ urlpatterns = [
         views.RSVPPartner.as_view(),
         name="rsvp_partner",
     ),
+    path("invites", views.Invites.as_view(), name="invites"),
     path("accounts/", include("django.contrib.auth.urls")),
     # https://stackoverflow.com/a/63445257/3161714
     path(

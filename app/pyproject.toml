@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "wedding-wrangle"
+version = "0.1.0"
+description = "A Django project to help you wrangle a wedding's guests."
+license = "MIT"
+authors = [
+    "Will Thong <will@willthong.com>"
+]
+repository = "https://github.com/willthong/wedding-wrangle"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11.6"
+Django = "^4.0.7"
+django-extensions = "^3.2.0"
+django-qr-code = "^3.1.1"
+django-tables2 = "^2.6.0"
+pillow = "^11.1.0"
+plotly = "^5.15.0"
+python-decouple = "^3.8"
+django-crispy-forms = "^1.14.0"
+gunicorn = "^20.1.0"
+pydantic-core = "^2.18.3"
+

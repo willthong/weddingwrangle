@@ -2,6 +2,7 @@ import csv
 from datetime import timedelta, datetime, date
 from io import StringIO
 import os, shutil
+from PIL import Image
 from plotly.offline import plot
 import plotly.graph_objs as graph_objs
 import re
@@ -26,6 +27,7 @@ from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from weddingwrangle.forms import (
     RSVPForm,
     GuestForm,
+    InviteForm,
     NewEmailForm,
     RSVPEmailTemplate,
     CSVForm,
@@ -34,7 +36,7 @@ from weddingwrangle.models import Guest, Email
 from weddingwrangle.tables import GuestTable
 from qr_code.qrcode.serve import make_qr_code_url
 from qr_code.qrcode.maker import QRCodeOptions, make_qr_code_image
-from weddingwrangle.scripts import csv_import
+from weddingwrangle.scripts import csv_import, generate_invites
 
 
 class GuestList(LoginRequiredMixin, SingleTableView):
@@ -393,6 +395,22 @@ class GuestUpload(LoginRequiredMixin, View):
             return HttpResponseRedirect(self.success_url)
         return render(request, self.template_name, {"form": form})
 
+class Invites(LoginRequiredMixin, View):
+    template_name = "weddingwrangle/invites.html"
+    success_url = reverse_lazy("guest_list")
+
+    def get(self, request):
+        form = InviteForm()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request):
+        form = InviteForm(request.POST, request.FILES)
+        if form.is_valid():
+            invite_template = Image.open(request.FILES["png"])
+            #TODO download generated file
+            generate_invites(invite_template)
+            return HttpResponseRedirect(self.success_url)
+        return render(request, self.template_name, {"form": form})
 
 @login_required
 def export_csv(response):
