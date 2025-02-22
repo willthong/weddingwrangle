@@ -6,9 +6,48 @@ from weddingwrangle.models import (
     Guest,
     Audience,
 )
+from PIL import Image, ImageDraw, ImageFont
+
 
 def generate_invites(invite_template):
-    print(type(invite_template))
+
+    # Set image size to A5 - bleed margins of 6 pixels in each direction * 300ppi
+    width, height = 1677, 2409
+    invite_template.resize((width, height))
+    image_object = ImageDraw.Draw(invite_template)
+
+    font = ImageFont.truetype("weddingwrangle/static/fonts/CharisSILR.ttf", 180)
+
+    text_lines = [
+        "Guest, we would be delighted",
+        "if you could join us at our wedding.",
+        "Please arrive for 1.30pm at\nChilderley Hall, Cambridge",
+        """
+            Visit wedding.beccy.willthong.com/\n
+            rsvp/yapksixQxN or scan the code\n
+            overleaf to RSVP & for more\n
+            information.
+        """,
+        "Carriages at midnight.",
+    ]
+
+    image_object.text(
+        (width * 1.8, height * 2),
+        text_lines[0],
+        font=font,
+        fill=(40, 123, 121),
+        anchor="mm",
+    )
+
+    image_object.text(
+        (width * 1.8, height * 2.2),
+        text_lines[1],
+        font=font,
+        fill=(40, 123, 121),
+        anchor="mm",
+    )
+
+    invite_template.save("temp.png")
 
     # for row in reader:
     #     guest = Guest.objects.get_or_create(
