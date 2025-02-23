@@ -407,9 +407,16 @@ class Invites(LoginRequiredMixin, View):
         form = InviteForm(request.POST, request.FILES)
         if form.is_valid():
             invite_template = Image.open(request.FILES["png"])
-            #TODO download generated file
-            generate_invites(invite_template)
-            return HttpResponseRedirect(self.success_url)
+            current_site = get_current_site(request)
+            protocol = "https" if request.is_secure() else "http"
+            generate_invites(invite_template, current_site, protocol)
+
+            response = HttpResponse(
+                open("generated_invites.pdf", "rb").read(),
+                content_type="application/pdf",
+                headers={"Content-Disposition": f"attachment; filename=generated_invites.pdf"},
+            )
+            return response
         return render(request, self.template_name, {"form": form})
 
 @login_required
