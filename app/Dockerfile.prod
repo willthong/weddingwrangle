@@ -43,7 +43,7 @@ WORKDIR $APP_HOME
 RUN apk update && apk add libpq
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
-RUN sh -c "pip install --no-cache-dir /wheels/*.whl"
+RUN pip install --no-cache-dir -r requirements.txt --find-links /wheels
 
 # Copy project
 COPY . $APP_HOME
