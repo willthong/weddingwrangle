@@ -4,7 +4,7 @@ services:
     build: 
       context: ./app
       dockerfile: Dockerfile.prod
-    command: gunicorn weddingwrangle.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn weddingwrangle.wsgi:application --bind 0.0.0.0:8000 --timeout 600
     volumes:
       - ./app/db.sqlite3:/usr/src/app/db.sqlite3
       - static:/home/app/weddingwrangle/static
