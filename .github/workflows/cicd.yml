@@ -90,10 +90,10 @@ jobs:
       - name: Configure Wireguard
         run: sudo ip link add dev wg0 type wireguard
       - run: |
-          sudo wg set wg0 listen-port 51820 
-          private-key '${{ secrets.WIREGUARD_PRIVATE_KEY }}'
-          peer '${{ secrets.WIREGUARD_ENDPOINT_PUBKEY }}'
-          allowed-ips '${{ secrets.WIREGUARD_ALLOWED_IPS }}'
+          sudo wg set wg0 listen-port 51820 \
+          private-key '${{ secrets.WIREGUARD_PRIVATE_KEY }}' \
+          peer '${{ secrets.WIREGUARD_ENDPOINT_PUBKEY }}' \
+          allowed-ips '${{ secrets.WIREGUARD_ALLOWED_IPS }}' \
           endpoint '${{ secrets.WIREGUARD_ENDPOINT }}'
       - name: Enable Wireguard
         run: sudo ip link set up dev wg0
