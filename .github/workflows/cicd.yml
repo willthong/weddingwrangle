@@ -91,15 +91,10 @@ jobs:
         run: sudo ip link add dev wg0 type wireguard
       - run: |
           sudo wg set wg0 listen-port 51820 
-          private-key $private_key 
-          peer $endpoint_public_key
-          allowed-ips $allowed_ips
-          endpoint $endpoint
-        with: 
-          endpoint: '${{ secrets.WIREGUARD_ENDPOINT }]'
-          private_key: '${{ secrets.WIREGUARD_PRIVATE_KEY }}'
-          endpoint_public_key: '${{ secrets.WIREGUARD_ENDPOINT_PUBKEY }}'
-          allowed_ips: '${{ secrets.WIREGUARD_ALLOWED_IPS }}'
+          private-key '${{ secrets.WIREGUARD_PRIVATE_KEY }}'
+          peer '${{ secrets.WIREGUARD_ENDPOINT_PUBKEY }}'
+          allowed-ips '${{ secrets.WIREGUARD_ALLOWED_IPS }}'
+          endpoint '${{ secrets.WIREGUARD_ENDPOINT }]'
       - name: Enable Wireguard
         run: sudo ip link set up dev wg0
       - run: curl -vvv death.internal:8123
