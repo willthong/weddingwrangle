@@ -93,7 +93,7 @@ jobs:
           echo '${{ secrets.WIREGUARD_PRIVATE_KEY }}' > private.key
           chmod 600 private.key
           sudo ip link add dev wg0 type wireguard
-          sudo ip addr add '{{ secrets.WIREGUARD_IPS }}' dev wg0
+          sudo ip addr add '${{ secrets.WIREGUARD_IPS }}' dev wg0
           sudo wg set wg0 listen-port 51820 \
           private-key private.key \
           peer '${{ secrets.WIREGUARD_ENDPOINT_PUBKEY }}' \
