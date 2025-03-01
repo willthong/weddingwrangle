@@ -98,9 +98,10 @@ jobs:
           peer '${{ secrets.WIREGUARD_ENDPOINT_PUBKEY }}' \
           allowed-ips '${{ secrets.WIREGUARD_ALLOWED_IPS }}' \
           endpoint '${{ secrets.WIREGUARD_ENDPOINT }}'
+          sudo ip route add ${{ secrets.WIREGUARD_IPS }} dev wg0
       - name: Enable Wireguard
         run: sudo ip link set up dev wg0
-      - run: curl -vvv 192.168.0.242:8123
+      - run: ping 192.168.0.242 || true
       - name: Install SSH key
         run: |
           mkdir -p ~/.ssh/
