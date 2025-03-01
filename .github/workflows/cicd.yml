@@ -94,7 +94,7 @@ jobs:
           private-key '${{ secrets.WIREGUARD_PRIVATE_KEY }}'
           peer '${{ secrets.WIREGUARD_ENDPOINT_PUBKEY }}'
           allowed-ips '${{ secrets.WIREGUARD_ALLOWED_IPS }}'
-          endpoint '${{ secrets.WIREGUARD_ENDPOINT }]'
+          endpoint '${{ secrets.WIREGUARD_ENDPOINT }}'
       - name: Enable Wireguard
         run: sudo ip link set up dev wg0
       - run: curl -vvv death.internal:8123
