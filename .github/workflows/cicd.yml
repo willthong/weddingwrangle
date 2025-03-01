@@ -93,14 +93,14 @@ jobs:
           echo '${{ secrets.WIREGUARD_PRIVATE_KEY }}' > private.key
           chmod 600 private.key
           sudo ip link add dev wg0 type wireguard
+          sudo ip addr add {{ secrets.WIREGUARD_IPS }} dev wg0
           sudo wg set wg0 listen-port 51820 \
           private-key private.key \
           peer '${{ secrets.WIREGUARD_ENDPOINT_PUBKEY }}' \
           allowed-ips '${{ secrets.WIREGUARD_ALLOWED_IPS }}' \
           endpoint '${{ secrets.WIREGUARD_ENDPOINT }}'
+          sudo ip link set up dev wg0
           sudo ip route add ${{ secrets.WIREGUARD_IPS }} dev wg0
-      - name: Enable Wireguard
-        run: sudo ip link set up dev wg0
       - run: ping 192.168.0.242 || true
       - name: Install SSH key
         run: |
