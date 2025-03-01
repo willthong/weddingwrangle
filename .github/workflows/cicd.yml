@@ -82,17 +82,27 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Install iproute2
-        run: sudo apt update && sudo apt upgrade && sudo apt install -y iproute2
-      - name: Set up WireGuard
-        uses: egor-tensin/setup-wireguard@v1
-        with:
-          endpoint: '${{ secrets.WIREGUARD_ENDPOINT }}'
-          endpoint_public_key: '${{ secrets.WIREGUARD_ENDPOINT_PUBKEY }}'
-          ips: '${{ secrets.WIREGUARD_IPS }}'
-          allowed_ips: '${{ secrets.WIREGUARD_ALLOWED_IPS }}'
+      - name: Install Wireguard
+        run: sudo apt-get update 
+      - run: sudo apt-get upgrade 
+      - run: sudo apt-get install -y iproute2
+      - run: sudo apt-get install -y wireguard
+      - name: Configure Wireguard
+        run: sudo ip link add dev wg0 type wireguard
+      - run: |
+          sudo wg set wg0 listen-port 51820 
+          private-key $private_key 
+          peer $endpoint_public_key
+          allowed-ips $allowed_ips
+          endpoint $endpoint
+        with: 
+          endpoint: '${{ secrets.WIREGUARD_ENDPOINT }]'
           private_key: '${{ secrets.WIREGUARD_PRIVATE_KEY }}'
-          preshared_key: '${{ secrets.WIREGUARD_PRESHARED }}'
+          endpoint_public_key: '${{ secrets.WIREGUARD_ENDPOINT_PUBKEY }}'
+          allowed_ips: '${{ secrets.WIREGUARD_ALLOWED_IPS }}'
+      - name: Enable Wireguard
+        run: sudo ip link set up dev wg0
+      - run: curl -vvv death.internal:8123
       - name: Install SSH key
         run: |
           mkdir -p ~/.ssh/
