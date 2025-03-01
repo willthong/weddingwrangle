@@ -100,7 +100,7 @@ jobs:
           endpoint '${{ secrets.WIREGUARD_ENDPOINT }}'
       - name: Enable Wireguard
         run: sudo ip link set up dev wg0
-      - run: curl -vvv death.internal:8123
+      - run: curl -vvv 192.168.0.242:8123
       - name: Install SSH key
         run: |
           mkdir -p ~/.ssh/
