@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install iproute2
-        run: sudo apt update && sudo apt install iproute2 -y
+        run: sudo apt update && sudo apt upgrade && sudo apt install -y iproute2
       - name: Set up WireGuard
         uses: egor-tensin/setup-wireguard@v1
         with:
