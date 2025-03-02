@@ -101,7 +101,6 @@ jobs:
           endpoint '${{ secrets.WIREGUARD_ENDPOINT }}'
           sudo ip link set up dev wg0
           sudo ip route add 0.0.0.0/0 dev wg0
-      - run: ping 192.168.0.242 || true
       - name: Install SSH key
         run: |
           mkdir -p ~/.ssh/
