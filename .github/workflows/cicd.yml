@@ -86,7 +86,7 @@ jobs:
         run: |
           sudo apt-get update 
           sudo apt-get install -y iproute2
-          sudo apt-get install -y --no-install-recommends wireguard wireguard-tools
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends wireguard wireguard-tools
       - name: Configure Wireguard
         run: |
           echo '${{ secrets.WIREGUARD_PRIVATE_KEY }}' > private.key
