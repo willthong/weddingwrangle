@@ -92,6 +92,7 @@ jobs:
           echo '${{ secrets.WIREGUARD_PRIVATE_KEY }}' > private.key
           chmod 600 private.key
       - name: Add Wireguard config
+        run: |
           sudo ip link add dev wg0 type wireguard
           sudo ip addr add '${{ secrets.WIREGUARD_IPS }}' dev wg0
           sudo wg set wg0 listen-port 51820 \
@@ -102,6 +103,7 @@ jobs:
           echo "Wireguard config added"
           sudo ip link set up dev wg0
       - name: Add Wireguard routing
+        run: |
           sudo ip route add 0.0.0.0/0 dev wg0
       - name: Install SSH key
         run: |
