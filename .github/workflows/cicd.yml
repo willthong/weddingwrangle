@@ -98,12 +98,18 @@ jobs:
           password: ${{ secrets.GHCR_TOKEN }}
       - name: Pull container
         run: docker pull ${{ needs.build.outputs.image_name }}
+      - name: Force recreate
+        run: docker rm -f weddingwrangle || true
       - name: Start Docker container
         run: |
-          docker compose \
-          -f docker-compose.prod.yml \
-          -e EMAIL_HOST_PASSWORD="${{ secrets.EMAIL_HOST_PASSWORD }}" \
-          -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
-          up -d --force-recreate
+          docker run -d \
+            --name weddingwrangle \
+            -p 8000:8000 \
+            -v $(pwd)/app/db.sqlite3:/usr/src/app/db.sqlite3 \
+            -v weddingwrangle_static:/home/app/weddingwrangle/static \
+            -e EMAIL_HOST_PASSWORD="${{ secrets.EMAIL_HOST_PASSWORD }}" \
+            -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
+            ghcr.io/willthong/weddingwrangle:master \
+            gunicorn weddingwrangle.wsgi:application --bind 0.0.0.0:8000 --timeout 600
       - name: Migrate database
         run: docker exec -t wedding-wrangle python manage.py migrate
