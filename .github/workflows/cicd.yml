@@ -87,7 +87,13 @@ jobs:
         run: cp docker-compose.prod.yml ${{ secrets.weddingwrangle_location }}
       - name: Visit Wedding Wrangle directory 
         run: cd ${{ secrets.weddingwrangle_location }}
-      - name: Pull latest Docker image
-        run: docker pull ${{ needs.build.outputs.image_tag }}
+      - name: GHCR login
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | \
+          docker login ghcr.io -u ${{ github.actor }} --password-stdin 
+      - name: Pull container
+        run: |
+          docker pull ${{ steps.meta.outputs.tags }}
+          docker pull ${{ needs.build.outputs.image_tag }}
       - name: Build Docker file
         run: docker compose -f docker-compose.prod.yml up -d --force-recreate 
