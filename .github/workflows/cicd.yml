@@ -7,7 +7,6 @@ on:
     branches: [ 'master' ]
 
 env:
-  # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
@@ -80,34 +79,15 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Install Wireguard package
-        run: |
-          sudo apt-get update 
-          sudo apt-get upgrade 
-          sudo apt-get install -y iproute2
-          sudo apt-get install -y wireguard
-      - name: Configure Wireguard
-        run: |
-          echo '${{ secrets.WIREGUARD_PRIVATE_KEY }}' > private.key
-          chmod 600 private.key
-          sudo ip link add dev wg0 type wireguard
-          sudo ip addr add '${{ secrets.WIREGUARD_IPS }}' dev wg0
-          sudo wg set wg0 listen-port 51820 \
-          private-key private.key \
-          peer '${{ secrets.WIREGUARD_ENDPOINT_PUBKEY }}' \
-          allowed-ips '${{ secrets.WIREGUARD_ALLOWED_IPS }}' \
-          endpoint '${{ secrets.WIREGUARD_ENDPOINT }}'
-          sudo ip link set up dev wg0
-          sudo ip route add 0.0.0.0/0 dev wg0
-      - run: ping 192.168.0.242 || true
-      - name: Install SSH key
-        run: |
-          mkdir -p ~/.ssh/
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.DEATH_AND_GRAVITY_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        shell: bash
-      - name: SSH into production server
-        run: ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no will@death.internal
-
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Copy docker-compose.prod.yml to deployment location
+        run: cp docker-compose.prod.yml ${{ secrets.weddingwrangle_location }}
+      - name: Visit Wedding Wrangle directory 
+        run: cd ${{ secrets.weddingwrangle_location }}
+      - name: Pull latest Docker image
+        run: docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+      - name: Build Docker file
+        run: docker compose -f docker-compose.prod.yml up -d --force-recreate 
