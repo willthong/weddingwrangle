@@ -98,9 +98,11 @@ jobs:
           password: ${{ secrets.GHCR_TOKEN }}
       - name: Pull container
         run: docker pull ${{ needs.build.outputs.image_name }}
-      - name: Set secret key hostvar
-        run: export SECRET_KEY=${{ secrets.SECRET_KEY }}
-      - name: Set email password hostvar
-        run: export EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}
-      - name: Build Docker file
-        run: docker compose -f docker-compose.prod.yml up -d --force-recreate 
+      - name: Start Docker container
+        run: |
+          docker compose \
+          -f docker-compose.prod.yml up -d --force-recreate \ 
+          -e EMAIL_HOST_PASSWORD="${{ secrets.EMAIL_HOST_PASSWORD }}" \
+          -e SECRET_KEY="${{ secrets.SECRET_KEY }}"
+      - name: Migrate database
+        run: docker exec -t wedding-wrangle python manage.py migrate
