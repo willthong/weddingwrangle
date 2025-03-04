@@ -90,8 +90,10 @@ jobs:
         run: cp -r ./app/weddingwrangle/static ${{ secrets.weddingwrangle_location }}/static
       - name: Visit Wedding Wrangle directory 
         run: cd ${{ secrets.weddingwrangle_location }}
+      - name: Force recreate
+        run: docker rm -f weddingwrangle || true
       - name: Make directories
-        run: mkdir static && mkdir app
+        run: mkdir -p static && mkdir -p app
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
@@ -100,8 +102,6 @@ jobs:
           password: ${{ secrets.GHCR_TOKEN }}
       - name: Pull container
         run: docker pull ${{ needs.build.outputs.image_name }}
-      - name: Force recreate
-        run: docker rm -f weddingwrangle || true
       - name: Start Docker container
         run: |
           docker run -d \
