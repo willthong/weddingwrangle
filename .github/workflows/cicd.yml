@@ -92,8 +92,8 @@ jobs:
         run: cd ${{ secrets.weddingwrangle_location }}
       - name: Force recreate
         run: docker rm -f weddingwrangle || true
-      - name: Make directories
-        run: mkdir -p static && mkdir -p app
+      - name: Make directory
+        run: mkdir -p app
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
@@ -108,7 +108,7 @@ jobs:
             --name weddingwrangle \
             -p 8000:8000 \
             -v $(pwd)/app/db.sqlite3:/usr/src/app/db.sqlite3 \
-            -v $(pwd)/static:/home/app/weddingwrangle/static \
+            -v $(pwd)/app/weddingwrangle/static:/usr/src/app/weddingwrangle/static \
             -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
             -e EMAIL_HOST_USER="${{ env.EMAIL_HOST_USER }}" \
             -e EMAIL_HOST_PASSWORD="${{ secrets.EMAIL_HOST_PASSWORD }}" \
