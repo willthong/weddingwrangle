@@ -104,8 +104,11 @@ jobs:
             -v $(pwd)/app/db.sqlite3:/usr/src/app/db.sqlite3 \
             -v weddingwrangle_static:/home/app/weddingwrangle/static \
             -e EMAIL_HOST_PASSWORD="${{ secrets.EMAIL_HOST_PASSWORD }}" \
-            -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
+            -e DJANGO_ALLOWED_HOSTS="${{ env.DJANGO_ALLOWED_HOSTS }}" \
+            -e VIRTUAL_PORT=${{ env.VIRTUAL_PORT }} \
+            -e LETSENCRYPT_HOST="${{ env.LETSENCRYPT_HOST }}" \
             ghcr.io/willthong/weddingwrangle:master \
             gunicorn weddingwrangle.wsgi:application --bind 0.0.0.0:8000 --timeout 600
       - name: Migrate database
-        run: docker exec -t wedding-wrangle python manage.py migrate
+        run: docker exec -t weddingwrangle python manage.py migrate
+
