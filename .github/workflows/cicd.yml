@@ -90,6 +90,8 @@ jobs:
         run: cp -r ./app/weddingwrangle/static ${{ secrets.weddingwrangle_location }}/static
       - name: Visit Wedding Wrangle directory 
         run: cd ${{ secrets.weddingwrangle_location }}
+      - name: Make directories
+        run: mkdir static && mkdir app
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
@@ -106,7 +108,7 @@ jobs:
             --name weddingwrangle \
             -p 8000:8000 \
             -v $(pwd)/app/db.sqlite3:/usr/src/app/db.sqlite3 \
-            -v weddingwrangle_static:/home/app/weddingwrangle/static \
+            -v $(pwd)/static:/home/app/weddingwrangle/static \
             -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
             -e EMAIL_HOST_USER="${{ env.EMAIL_HOST_USER }}" \
             -e EMAIL_HOST_PASSWORD="${{ secrets.EMAIL_HOST_PASSWORD }}" \
@@ -115,6 +117,8 @@ jobs:
             -e LETSENCRYPT_HOST="${{ env.LETSENCRYPT_HOST }}" \
             ghcr.io/willthong/weddingwrangle:master \
             gunicorn weddingwrangle.wsgi:application --bind 0.0.0.0:8000 --timeout 600
+      - name: Make migrations
+        run: docker exec -t weddingwrangle python manage.py makemigrations
       - name: Migrate database
         run: docker exec -t weddingwrangle python manage.py migrate
 
