@@ -87,7 +87,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Copy static files
-        run: cp -r ./app/weddingwrangle/static ${{ secrets.weddingwrangle_location }}/static
+        run: cp -r ./app/weddingwrangle/static ${{ secrets.weddingwrangle_location }}/app/weddingwrangle/static
       - name: Visit Wedding Wrangle directory 
         run: cd ${{ secrets.weddingwrangle_location }}
       - name: Force recreate
