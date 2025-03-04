@@ -103,6 +103,7 @@ jobs:
             -p 8000:8000 \
             -v $(pwd)/app/db.sqlite3:/usr/src/app/db.sqlite3 \
             -v weddingwrangle_static:/home/app/weddingwrangle/static \
+            -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
             -e EMAIL_HOST_PASSWORD="${{ secrets.EMAIL_HOST_PASSWORD }}" \
             -e DJANGO_ALLOWED_HOSTS="${{ env.DJANGO_ALLOWED_HOSTS }}" \
             -e VIRTUAL_PORT=${{ env.VIRTUAL_PORT }} \
