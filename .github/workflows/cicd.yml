@@ -89,11 +89,17 @@ jobs:
       - name: Make directory
         run: mkdir -p ${{ secrets.weddingwrangle_location }}/app/weddingwrangle/static
       - name: Copy static files
-        run: cp -r ./app/weddingwrangle/static ${{ secrets.weddingwrangle_location }}/app/weddingwrangle/static
+        run: cp -r ./app/weddingwrangle/static ${{ secrets.weddingwrangle_location }}/app/weddingwrangle
+      - name: Create DB file so it's not created as a directory
+        run: touch ${{ secrets.weddingwrangle_location }}/app/db.sqlite3
+      - name: Correct permissions
+        run: |
+          chown -R $(whoami):$(whoami) ${{ secrets.weddingwrangle_location }}/app
+          chmod -R 755 ${{ secrets.weddingwrangle_location }}/app
       - name: Visit Wedding Wrangle directory 
         run: cd ${{ secrets.weddingwrangle_location }}
       - name: Force recreate
-        run: docker rm -f weddingwrangle || true
+        run: docker stop weddingwrangle && docker rm -f weddingwrangle || true
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
