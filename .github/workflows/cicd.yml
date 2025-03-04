@@ -94,7 +94,7 @@ jobs:
         run: touch ${{ secrets.weddingwrangle_location }}/app/db.sqlite3
       - name: Correct permissions
         run: |
-          chown -R $(whoami):$(whoami) ${{ secrets.weddingwrangle_location }}/app
+          chown -R $(whoami):$(whoami | id -ng) ${{ secrets.weddingwrangle_location }}/app
           chmod -R 755 ${{ secrets.weddingwrangle_location }}/app
       - name: Visit Wedding Wrangle directory 
         run: cd ${{ secrets.weddingwrangle_location }}
