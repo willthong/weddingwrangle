@@ -84,6 +84,10 @@ jobs:
     needs: build
     runs-on: self-hosted
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Copy static files
+        run: cp -r ./app/weddingwrangle/static ${{ secrets.weddingwrangle_location }}/static
       - name: Visit Wedding Wrangle directory 
         run: cd ${{ secrets.weddingwrangle_location }}
       - name: Log into registry ${{ env.REGISTRY }}
