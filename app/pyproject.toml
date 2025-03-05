@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wedding-wrangle"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Django project to help you wrangle a wedding's guests."
 license = "MIT"
 authors = [
