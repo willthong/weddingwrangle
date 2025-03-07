@@ -10,31 +10,62 @@ PARAGRAPH_SPACING = 160
 WIDTH = 1748
 HEIGHT = 2480
 X_CENTRE = WIDTH // 2
-FONT = ImageFont.truetype("weddingwrangle/static/fonts/CharisSILR.ttf", 50)
+TITLE_FONT = ImageFont.truetype("weddingwrangle/static/fonts/felixtitlingmt.ttf", 80)
+BODY_FONT = ImageFont.truetype("weddingwrangle/static/fonts/CharisSILR.ttf", 50)
+TURQUOISE=(40, 123, 121)
+
 
 def print_and_move_cursor(
     image_object: ImageDraw.Draw,
     current_y_position: float, 
     text: str, 
-    paragraph_drop: bool
+    drop_distance: int,
+    selected_font
 ):
     image_object.text(
         (X_CENTRE, current_y_position),
         text,
-        font=FONT,
-        fill=(40, 123, 121),
+        font=selected_font,
+        fill=TURQUOISE,
         anchor="mm",
     )
 
-    if paragraph_drop:
-        current_y_position += PARAGRAPH_SPACING
-    else:
-        current_y_position += LINE_SPACING
+    current_y_position += drop_distance
 
     return image_object, current_y_position
 
 
-def generate_invite(image_object, invitee: dict):
+def add_title_text(image_object: ImageDraw.Draw):
+    current_y_position = HEIGHT * 0.28
+    image_object, current_y_position = print_and_move_cursor(
+        image_object, current_y_position, "Beccy & Will", 160, TITLE_FONT
+    )
+    image_object, current_y_position = print_and_move_cursor(
+        image_object, current_y_position, "Are Getting Married", 190, TITLE_FONT
+    )
+    image_object, current_y_position = print_and_move_cursor(
+        image_object, current_y_position, "5th July 2025", 0, TITLE_FONT
+    )
+    return
+
+def add_date_lines(image_object: ImageDraw.Draw):
+    mid_point = WIDTH / 2
+    line_width = 510
+    line_1_y = 970
+    line_2_y = 1120
+    image_object.line(
+        (mid_point - line_width / 2, line_1_y, mid_point + line_width / 2, line_1_y), 
+        fill=TURQUOISE, 
+        width=2
+    )
+    image_object.line(
+        (mid_point - line_width / 2, line_2_y, mid_point + line_width / 2, line_2_y), 
+        fill=TURQUOISE, 
+        width=2
+    )
+    return
+
+def generate_invite(image_object: ImageDraw.Draw, invitee: dict):
 
     text_lines = [
         f"{invitee['name']}, we would be delighted",
@@ -50,12 +81,13 @@ def generate_invite(image_object, invitee: dict):
 
     current_y_position = HEIGHT * 0.5
 
-    for index, text_line in enumerate(
-        text_lines
-    ):
-        paragraph_drop = index in [1, 3, 7]
+    for index, text_line in enumerate(text_lines):
+        if index in [1, 3, 7]:
+            drop_distance = PARAGRAPH_SPACING
+        else:
+            drop_distance = LINE_SPACING
         image_object, current_y_position = print_and_move_cursor(
-            image_object, current_y_position, text_line, paragraph_drop
+            image_object, current_y_position, text_line, drop_distance, BODY_FONT
         )
 
     return 
@@ -73,12 +105,16 @@ def generate_qr_image(rsvp_link, current_site, protocol):
     return blank_page
 
 def generate_invites(invite_template, current_site, protocol):
-
+    invite_template = Image.open(invite_template)
     guests = Guest.objects.all()
     invite_data, partners_done = [], set()
     for guest in guests:
         if guest in partners_done:
             continue
+        # DELETE ME BEFORE MERGE
+        if guest.first_name != "Luke":
+            continue
+        ###
         this_guest = {}
         this_guest["name"] = guest.first_name
         if guest.partner:
@@ -88,9 +124,10 @@ def generate_invites(invite_template, current_site, protocol):
         invite_data.append(this_guest)
 
     for index, invitee in enumerate(invite_data):
-
         base_image = invite_template.resize((WIDTH, HEIGHT)).copy()
         image_object = ImageDraw.Draw(base_image)
+        add_title_text(image_object)
+        add_date_lines(image_object)
         generate_invite(image_object, invitee)
         if index == 0:
             base_image.save("generated_invites.pdf")
@@ -99,7 +136,4 @@ def generate_invites(invite_template, current_site, protocol):
 
         qr_page = generate_qr_image(invitee["rsvp_link"], current_site, protocol)
         qr_page.save("generated_invites.pdf", append=True)
-
-        print(f"Printed invite to {invitee['name']}")
-
     return

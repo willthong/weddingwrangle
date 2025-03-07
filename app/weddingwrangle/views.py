@@ -2,7 +2,6 @@ import csv
 from datetime import timedelta, datetime, date
 from io import StringIO
 import os, shutil
-from PIL import Image
 from plotly.offline import plot
 import plotly.graph_objs as graph_objs
 import re
@@ -406,7 +405,7 @@ class Invites(LoginRequiredMixin, View):
     def post(self, request):
         form = InviteForm(request.POST, request.FILES)
         if form.is_valid():
-            invite_template = Image.open(request.FILES["png"])
+            invite_template = request.FILES["png"] or request.FILES["tiff"]
             current_site = get_current_site(request)
             protocol = "https" if request.is_secure() else "http"
             generate_invites(invite_template, current_site, protocol)
