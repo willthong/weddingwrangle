@@ -159,7 +159,7 @@ class CSVForm(forms.Form):
             self.add_error("csv", "File must be < " + self.upload_limit_text + " bytes")
 
 class InviteForm(forms.Form):
-    upload_limit = 600 * 1024 * 1024
+    upload_limit = 50 * 1024 * 1024
     upload_limit_text = naturalsize(upload_limit)
 
     image = forms.FileField(required=True, label="File to Upload <= " + upload_limit_text)

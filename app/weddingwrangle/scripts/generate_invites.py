@@ -111,10 +111,6 @@ def generate_invites(invite_template, current_site, protocol):
     for guest in guests:
         if guest in partners_done:
             continue
-        # DELETE ME BEFORE MERGE
-        if guest.first_name != "Luke":
-            continue
-        ###
         this_guest = {}
         this_guest["name"] = guest.first_name
         if guest.partner:
