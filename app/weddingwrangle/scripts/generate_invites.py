@@ -12,8 +12,8 @@ HEIGHT = 2480
 X_CENTRE = WIDTH // 2
 TITLE_FONT = ImageFont.truetype("weddingwrangle/static/fonts/felixtitlingmt.ttf", 80)
 BODY_FONT = ImageFont.truetype("weddingwrangle/static/fonts/CharisSILR.ttf", 50)
-TURQUOISE=(40, 123, 121)
-
+TURQUOISE=(117, 0, 5, 133)
+TURQUOISE_PNG=(67, 123, 121)
 
 def print_and_move_cursor(
     image_object: ImageDraw.Draw,
@@ -93,7 +93,7 @@ def generate_invite(image_object: ImageDraw.Draw, invitee: dict):
     return 
 
 def generate_qr_image(rsvp_link, current_site, protocol):
-    qr_options = QRCodeOptions(image_format="png", size="s", dark_color=(40,123,121))
+    qr_options = QRCodeOptions(image_format="png", size="s", dark_color=TURQUOISE_PNG)
     path = reverse("rsvp", args=[rsvp_link])
     rsvp_url = f"{protocol}://{current_site}{path}"
     qr_image = Image.open(BytesIO(make_qr_code_image(rsvp_url, qr_options)))
@@ -126,8 +126,8 @@ def generate_invites(invite_template, current_site, protocol):
     for index, invitee in enumerate(invite_data):
         base_image = invite_template.resize((WIDTH, HEIGHT)).copy()
         image_object = ImageDraw.Draw(base_image)
-        add_title_text(image_object)
         add_date_lines(image_object)
+        add_title_text(image_object)
         generate_invite(image_object, invitee)
         if index == 0:
             base_image.save("generated_invites.pdf")

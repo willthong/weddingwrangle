@@ -405,7 +405,8 @@ class Invites(LoginRequiredMixin, View):
     def post(self, request):
         form = InviteForm(request.POST, request.FILES)
         if form.is_valid():
-            invite_template = request.FILES["png"] or request.FILES["tiff"]
+            invite_template = request.FILES.get("image")
+            print(invite_template)
             current_site = get_current_site(request)
             protocol = "https" if request.is_secure() else "http"
             generate_invites(invite_template, current_site, protocol)

@@ -159,18 +159,18 @@ class CSVForm(forms.Form):
             self.add_error("csv", "File must be < " + self.upload_limit_text + " bytes")
 
 class InviteForm(forms.Form):
-    upload_limit = 80 * 1024 * 1024
+    upload_limit = 600 * 1024 * 1024
     upload_limit_text = naturalsize(upload_limit)
 
-    png = forms.FileField(required=True, label="File to Upload <= " + upload_limit_text)
-    upload_field_name = "png"
+    image = forms.FileField(required=True, label="File to Upload <= " + upload_limit_text)
+    upload_field_name = "image"
 
     # Data currently exists as request.FILES["csv"]
 
     # Validate the size of the file
     def clean(self):
         cleaned_data = super().clean()
-        file = cleaned_data.get("png") or cleaned_data.get("tif")
+        file = cleaned_data.get("image")
         if file is None:
             return
         if len(file) > self.upload_limit:
