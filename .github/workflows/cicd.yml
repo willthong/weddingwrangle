@@ -133,7 +133,7 @@ jobs:
           docker run -d \
             --name weddingwrangle \
             -p 8000:8000 \
-            --mount type=bind,src={{ secrets.weddingwrangle_location }}/app/db.sqlite3,dst=/usr/src/app/db.sqlite3 \
+            --mount type=bind,src=${{ secrets.weddingwrangle_location }}/app/db.sqlite3,dst=/usr/src/app/db.sqlite3 \
             -v $(pwd)/app/weddingwrangle/static:/usr/src/app/weddingwrangle/static \
             -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
             -e EMAIL_HOST_USER="${{ env.EMAIL_HOST_USER }}" \
