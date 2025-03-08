@@ -4,14 +4,14 @@ from PIL import Image, ImageDraw, ImageFont
 from qr_code.qrcode.maker import QRCodeOptions, make_qr_code_image
 from django.urls import  reverse
 
-LINE_SPACING = 80
+LINE_SPACING = 70
 PARAGRAPH_SPACING = 160
 # Image size: to A5 - bleed margins of 6 pixels in each direction * 300ppi
 WIDTH = 1748
 HEIGHT = 2480
 X_CENTRE = WIDTH // 2
 TITLE_FONT = ImageFont.truetype("weddingwrangle/static/fonts/felixtitlingmt.ttf", 80)
-BODY_FONT = ImageFont.truetype("weddingwrangle/static/fonts/CharisSILR.ttf", 50)
+BODY_FONT = ImageFont.truetype("weddingwrangle/static/fonts/CharisSILR.ttf", 43)
 TURQUOISE=(117, 0, 5, 133)
 TURQUOISE_PNG=(67, 123, 121)
 
@@ -71,7 +71,7 @@ def generate_invite(image_object: ImageDraw.Draw, invitee: dict):
         f"{invitee['name']}, we would be delighted",
         "if you could join us at our wedding.",
         "Please arrive for 1.30pm at",
-        "Childerley Hall, Cambridge",
+        "Childerley Hall, Cambridge.",
         "Visit wedding.beccy.willthong.com",
         f"rsvp/{invitee['rsvp_link']} or scan the code",
         "overleaf to RSVP & for more",
@@ -79,7 +79,7 @@ def generate_invite(image_object: ImageDraw.Draw, invitee: dict):
         "Carriages at midnight."
     ]
 
-    current_y_position = HEIGHT * 0.5
+    current_y_position = HEIGHT * 0.51
 
     for index, text_line in enumerate(text_lines):
         if index in [1, 3, 7]:

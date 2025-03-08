@@ -110,8 +110,8 @@ jobs:
         run: mkdir -p ${{ secrets.weddingwrangle_location }}/app/weddingwrangle/static
       - name: Copy static files
         run: cp -r ./app/weddingwrangle/static ${{ secrets.weddingwrangle_location }}/app/weddingwrangle
-      - name: Create DB file so it's not created as a directory
-        run: touch ${{ secrets.weddingwrangle_location }}/app/db.sqlite3
+      - name: Ensure DB file exists but do not overwrite
+        run: test -f ${{ secrets.weddingwrangle_location }}/app/db.sqlite3 || touch ${{ secrets.weddingwrangle_location }}/app/db.sqlite3
       - name: Correct permissions
         run: |
           chown -R $(whoami):$(whoami | id -ng) ${{ secrets.weddingwrangle_location }}/app
@@ -143,6 +143,8 @@ jobs:
             -e LETSENCRYPT_HOST="${{ env.LETSENCRYPT_HOST }}" \
             ghcr.io/willthong/weddingwrangle:master \
             gunicorn weddingwrangle.wsgi:application --bind 0.0.0.0:8000 --timeout 600
+      - name: Check DB before migration
+        run: ls -lh ${{ secrets.weddingwrangle_location }}/app/db.sqlite3 && file ${{ secrets.weddingwrangle_location }}/app/db.sqlite3
       - name: Make migrations
         run: docker exec -t weddingwrangle python manage.py makemigrations
       - name: Migrate database
