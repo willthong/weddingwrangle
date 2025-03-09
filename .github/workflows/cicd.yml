@@ -121,12 +121,12 @@ jobs:
       - name: Check container
         id: check_container
         run: |
-          if [[ docker ps --format '{{.Names}}' | grep -q 'weddingwrangle' ]]; then
+          if docker ps --format '{{.Names}}' | grep -q 'weddingwrangle'; then
             echo "CONTAINER_EXISTS=true" >> $GITHUB_OUTPUT
           else
             echo "CONTAINER_EXISTS=false" >> $GITHUB_OUTPUT
           fi
-          if [[ docker container inspect weddingwrangle | jq '.[].State.Status' -eq "running" ]]; then
+          if [[ $(docker container inspect weddingwrangle 2>/dev/null | jq '.[].State.Status') == "running" ]]; then
             echo "CONTAINER_RUNNING=true" >> $GITHUB_OUTPUT
           else
             echo "CONTAINER_RUNNING=false" >> $GITHUB_OUTPUT
