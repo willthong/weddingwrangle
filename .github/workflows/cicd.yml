@@ -121,7 +121,7 @@ jobs:
       - name: Check container
         id: check_container
         run: |
-          if docker ps --format '{{.Names}}' | grep -q '^weddingwrangle$'; then
+          if [[ docker ps --format '{{.Names}}' | grep -q 'weddingwrangle' ]]; then
             echo "CONTAINER_EXISTS=true" >> $GITHUB_OUTPUT
           else
             echo "CONTAINER_EXISTS=false" >> $GITHUB_OUTPUT
