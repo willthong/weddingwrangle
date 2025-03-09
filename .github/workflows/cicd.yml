@@ -110,8 +110,6 @@ jobs:
         run: mkdir -p ${{ secrets.weddingwrangle_location }}/app/weddingwrangle/static
       - name: Copy static files
         run: cp -r ./app/weddingwrangle/static ${{ secrets.weddingwrangle_location }}/app/weddingwrangle
-      - name: Ensure DB file exists but do not overwrite
-        run: test -f ${{ secrets.weddingwrangle_location }}/app/db.sqlite3 || touch ${{ secrets.weddingwrangle_location }}/app/db.sqlite3
       - name: Correct permissions
         run: |
           chown -R $(whoami):$(whoami | id -ng) ${{ secrets.weddingwrangle_location }}/app
@@ -134,6 +132,9 @@ jobs:
       - name: Backup existing database
         if: steps.check_container.outputs.CONTAINER_EXISTS == 'true'
         run: docker cp weddingwrangle:/usr/src/app/db.sqlite3 ${{ secrets.weddingwrangle_location }}/app/db.sqlite3 
+      - name: Ensure DB file exists but do not overwrite
+        if: steps.check_container.outputs.CONTAINER_EXISTS == 'false'
+        run: test -f ${{ secrets.weddingwrangle_location }}/app/db.sqlite3 || touch ${{ secrets.weddingwrangle_location }}/app/db.sqlite3
       - name: Stop container
         if: steps.check_container.outputs.CONTAINER_RUNNING == 'true'
         run: docker stop weddingwrangle
