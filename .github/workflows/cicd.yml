@@ -118,8 +118,19 @@ jobs:
           chmod -R 755 ${{ secrets.weddingwrangle_location }}/app
       - name: Visit Wedding Wrangle directory 
         run: cd ${{ secrets.weddingwrangle_location }}
-      - name: Stop and remove container
-        run: docker container rm -fv weddingwrangle 
+      - name: Check existing container
+        run: |
+          CONTAINER_EXISTS=$(docker ps --format '{{.Names}}' | grep -q '^weddingwrangle$' && echo "yes" || echo "no")
+          echo "CONTAINER_EXISTS=$CONTAINER_EXISTS" >> $CONTAINER_EXISTS
+      - name: Backup existing database
+        if: $CONTAINER_EXISTS
+        run: docker cp weddingwrangle:/usr/src/app/db.sqlite3 ${{ secrets.weddingwrangle_location }}/app/db.sqlite3 
+      - name: Stop container
+        if: $CONTAINER_EXISTS
+        run: docker stop weddingwrangle
+      - name: Remove container
+        if: $CONTAINER_EXISTS
+        run: docker container rm weddingwrangle 
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
@@ -133,8 +144,8 @@ jobs:
           docker run -d \
             --name weddingwrangle \
             -p 8000:8000 \
-            --mount type=bind,src=${{ secrets.weddingwrangle_location }}/app/db.sqlite3,dst=/usr/src/app/db.sqlite3 \
-            -v $(pwd)/app/weddingwrangle/static:/usr/src/app/weddingwrangle/static \
+            -v ${{ secrets.weddingwrangle_location }}/app/db.sqlite3:/usr/src/app/db.sqlite3 \
+            -v ${{ secrets.weddingwrangle_location }}/app/weddingwrangle/static:/usr/src/app/weddingwrangle/static \
             -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
             -e EMAIL_HOST_USER="${{ env.EMAIL_HOST_USER }}" \
             -e EMAIL_HOST_PASSWORD="${{ secrets.EMAIL_HOST_PASSWORD }}" \
@@ -147,4 +158,3 @@ jobs:
         run: docker exec -t weddingwrangle python manage.py makemigrations
       - name: Migrate database
         run: docker exec -t weddingwrangle python manage.py migrate
-
