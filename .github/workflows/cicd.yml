@@ -119,6 +119,7 @@ jobs:
       - name: Visit Wedding Wrangle directory 
         run: cd ${{ secrets.weddingwrangle_location }}
       - name: Check existing container
+        id: check_container
         run: |
           if docker ps --format '{{.Names}}' | grep -q '^weddingwrangle$'; then
             echo "CONTAINER_EXISTS=true" >> $GITHUB_OUTPUT
@@ -126,13 +127,13 @@ jobs:
             echo "CONTAINER_EXISTS=false" >> $GITHUB_OUTPUT
           fi
       - name: Backup existing database
-        if: steps.check_pattern.outputs.CONTAINER_EXISTS == "true"
+        if: steps.check_container.outputs.CONTAINER_EXISTS == 'true'
         run: docker cp weddingwrangle:/usr/src/app/db.sqlite3 ${{ secrets.weddingwrangle_location }}/app/db.sqlite3 
       - name: Stop container
-        if: steps.check_pattern.outputs.CONTAINER_EXISTS == "true"
+        if: steps.check_container.outputs.CONTAINER_EXISTS == 'true'
         run: docker stop weddingwrangle
       - name: Remove container
-        if: steps.check_pattern.outputs.CONTAINER_EXISTS == "true"
+        if: steps.check_pattern.outputs.CONTAINER_EXISTS == 'true'
         run: docker container rm weddingwrangle 
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
