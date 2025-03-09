@@ -138,7 +138,7 @@ jobs:
         if: steps.check_container.outputs.CONTAINER_RUNNING == 'true'
         run: docker stop weddingwrangle
       - name: Remove container
-        if: steps.check_pattern.outputs.CONTAINER_EXISTS == 'true'
+        if: steps.check_container.outputs.CONTAINER_EXISTS == 'true'
         run: docker container rm weddingwrangle 
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
