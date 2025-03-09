@@ -126,7 +126,7 @@ jobs:
           else
             echo "CONTAINER_EXISTS=false" >> $GITHUB_OUTPUT
           fi
-          if [[ $(docker container inspect weddingwrangle 2>/dev/null | jq '.[].State.Status') == "running" ]]; then
+          if [[ $(docker container inspect weddingwrangle 2>/dev/null | jq '.[0].State.Status') == "running" ]]; then
             echo "CONTAINER_RUNNING=true" >> $GITHUB_OUTPUT
           else
             echo "CONTAINER_RUNNING=false" >> $GITHUB_OUTPUT
