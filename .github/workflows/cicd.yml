@@ -154,8 +154,8 @@ jobs:
           docker run -d \
             --name weddingwrangle \
             -p 8000:8000 \
-            -v ${{ secrets.weddingwrangle_location }}/app/db.sqlite3:/usr/src/app/db.sqlite3 \
-            -v ${{ secrets.weddingwrangle_location }}/app/weddingwrangle/static:/usr/src/app/weddingwrangle/static \
+            -v ${{ secrets.weddingwrangle_location }}/app/db.sqlite3:/home/app/weddingwrangle/db.sqlite3 \
+            -v ${{ secrets.weddingwrangle_location }}/app/weddingwrangle/static:/home/app/weddingwrangle/static \
             -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
             -e EMAIL_HOST_USER="${{ env.EMAIL_HOST_USER }}" \
             -e EMAIL_HOST_PASSWORD="${{ secrets.EMAIL_HOST_PASSWORD }}" \
