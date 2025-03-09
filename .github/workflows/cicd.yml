@@ -143,8 +143,6 @@ jobs:
             -e LETSENCRYPT_HOST="${{ env.LETSENCRYPT_HOST }}" \
             ghcr.io/willthong/weddingwrangle:master \
             gunicorn weddingwrangle.wsgi:application --bind 0.0.0.0:8000 --timeout 600
-      - name: Check DB before migration
-        run: ls -lh ${{ secrets.weddingwrangle_location }}/app/db.sqlite3 && file ${{ secrets.weddingwrangle_location }}/app/db.sqlite3
       - name: Make migrations
         run: docker exec -t weddingwrangle python manage.py makemigrations
       - name: Migrate database
