@@ -109,7 +109,7 @@ def generate_invites(invite_template, current_site, protocol):
     guests = Guest.objects.all()
     invite_data, partners_done = [], set()
     for guest in guests:
-        if guest in partners_done:
+        if guest in partners_done or guest.position.name in ["Bride", "Groom"]:
             continue
         this_guest = {}
         this_guest["name"] = guest.first_name
