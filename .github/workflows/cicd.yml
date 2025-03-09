@@ -118,7 +118,7 @@ jobs:
           chmod -R 755 ${{ secrets.weddingwrangle_location }}/app
       - name: Visit Wedding Wrangle directory 
         run: cd ${{ secrets.weddingwrangle_location }}
-      - name: Check existing container
+      - name: Check container
         id: check_container
         run: |
           if docker ps --format '{{.Names}}' | grep -q '^weddingwrangle$'; then
@@ -126,11 +126,16 @@ jobs:
           else
             echo "CONTAINER_EXISTS=false" >> $GITHUB_OUTPUT
           fi
+          if [[ docker container inspect weddingwrangle | jq '.[].State.Status' -eq "running" ]]; then
+            echo "CONTAINER_RUNNING=true" >> $GITHUB_OUTPUT
+          else
+            echo "CONTAINER_RUNNING=false" >> $GITHUB_OUTPUT
+          fi
       - name: Backup existing database
         if: steps.check_container.outputs.CONTAINER_EXISTS == 'true'
         run: docker cp weddingwrangle:/usr/src/app/db.sqlite3 ${{ secrets.weddingwrangle_location }}/app/db.sqlite3 
       - name: Stop container
-        if: steps.check_container.outputs.CONTAINER_EXISTS == 'true'
+        if: steps.check_container.outputs.CONTAINER_RUNNING == 'true'
         run: docker stop weddingwrangle
       - name: Remove container
         if: steps.check_pattern.outputs.CONTAINER_EXISTS == 'true'
