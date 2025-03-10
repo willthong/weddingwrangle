@@ -131,7 +131,7 @@ jobs:
           fi
       - name: Backup existing database
         if: steps.check_container.outputs.CONTAINER_EXISTS == 'true'
-        run: docker cp weddingwrangle:/usr/src/app/db.sqlite3 ${{ secrets.weddingwrangle_location }}/app/db.sqlite3 
+        run: docker cp weddingwrangle:/home/app/weddingwrangle/app/db.sqlite3 ${{ secrets.weddingwrangle_location }}/app/db.sqlite3 
       - name: Ensure DB file exists but do not overwrite
         if: steps.check_container.outputs.CONTAINER_EXISTS == 'false'
         run: test -f ${{ secrets.weddingwrangle_location }}/app/db.sqlite3 || touch ${{ secrets.weddingwrangle_location }}/app/db.sqlite3
