@@ -6,9 +6,13 @@ from django.urls import  reverse
 
 LINE_SPACING = 70
 PARAGRAPH_SPACING = 160
-# Image size: to A5 - bleed margins of 6 pixels in each direction * 300ppi
-WIDTH = 1748
-HEIGHT = 2480
+# Image size: to A5 * 300ppi
+CONTENT_WIDTH = 1748
+CONTENT_HEIGHT = 2480
+# Margin: 3mm bleed * 300ppi
+MARGIN = 35
+WIDTH = CONTENT_WIDTH + (MARGIN * 2)
+HEIGHT = CONTENT_HEIGHT + (MARGIN * 2)
 X_CENTRE = WIDTH // 2
 TITLE_FONT = ImageFont.truetype("weddingwrangle/static/fonts/felixtitlingmt.ttf", 80)
 BODY_FONT = ImageFont.truetype("weddingwrangle/static/fonts/CharisSILR.ttf", 43)
@@ -51,8 +55,8 @@ def add_title_text(image_object: ImageDraw.Draw):
 def add_date_lines(image_object: ImageDraw.Draw):
     mid_point = WIDTH / 2
     line_width = 510
-    line_1_y = 970
-    line_2_y = 1120
+    line_1_y = MARGIN + 970
+    line_2_y = MARGIN + 1120
     image_object.line(
         (mid_point - line_width / 2, line_1_y, mid_point + line_width / 2, line_1_y), 
         fill=TURQUOISE, 
