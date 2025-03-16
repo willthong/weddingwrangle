@@ -19,6 +19,15 @@ BODY_FONT = ImageFont.truetype("weddingwrangle/static/fonts/CharisSILR.ttf", 43)
 TURQUOISE=(117, 0, 5, 133)
 TURQUOISE_PNG=(67, 123, 121)
 
+FAMILY_ALIAS = {
+    "Elsa": "Poh Poh",
+    "Sehu": "Ma Ma", 
+    "Jean": "Grandma",
+    "William": "Uncle William",
+    "Jasmine": "Kharm Kuh Cheh",
+    "Theng": "Theng Kuh Cheh"
+}
+
 def print_and_move_cursor(
     image_object: ImageDraw.Draw,
     current_y_position: float, 
@@ -126,7 +135,10 @@ def generate_invites(invite_template, current_site, protocol):
         if guest in partners_done or guest.position.name in ["Bride", "Groom"]:
             continue
         this_guest = {}
-        this_guest["name"] = guest.first_name
+        if guest.first_name in FAMILY_ALIAS.keys():
+            this_guest["name"] = FAMILY_ALIAS.get(guest.first_name)
+        else:
+            this_guest["name"] = guest.first_name
         if guest.partner:
             this_guest["name"] += " & " + guest.partner.first_name
             partners_done.add(guest.partner)
