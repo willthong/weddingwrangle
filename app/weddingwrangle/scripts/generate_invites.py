@@ -24,8 +24,6 @@ FAMILY_ALIAS = {
     "Sehu": "Ma Ma", 
     "Jean": "Grandma",
     "William": "Uncle William",
-    "Jasmine": "Kharm Kuh Cheh",
-    "Theng": "Theng Kuh Cheh"
 }
 
 def print_and_move_cursor(
