@@ -55,8 +55,8 @@ def add_title_text(image_object: ImageDraw.Draw):
 def add_date_lines(image_object: ImageDraw.Draw):
     mid_point = WIDTH / 2
     line_width = 510
-    line_1_y = MARGIN + 970
-    line_2_y = MARGIN + 1120
+    line_1_y = 987
+    line_2_y = 1137
     image_object.line(
         (mid_point - line_width / 2, line_1_y, mid_point + line_width / 2, line_1_y), 
         fill=TURQUOISE, 
@@ -101,15 +101,25 @@ def generate_qr_image(rsvp_link, current_site, protocol):
     path = reverse("rsvp", args=[rsvp_link])
     rsvp_url = f"{protocol}://{current_site}{path}"
     qr_image = Image.open(BytesIO(make_qr_code_image(rsvp_url, qr_options)))
+    qr_image = qr_image.convert("CMYK")
     qr_width, qr_height = qr_image.size
-    blank_page = Image.new('RGB', (WIDTH, HEIGHT), "white")
+    page = Image.new('CMYK', (WIDTH, HEIGHT), (0,0,0,0))
     x_position = (WIDTH - qr_width) // 2
     y_position = (WIDTH - qr_height) // 2
-    blank_page.paste(qr_image, (x_position, y_position))
-    return blank_page
+    page.paste(qr_image, (x_position, y_position))
+    return page
+
+
+def convert_to_cmyk(image):
+    if image.mode != 'CMYK':
+        return image.convert('CMYK')
+    return image
 
 def generate_invites(invite_template, current_site, protocol):
     invite_template = Image.open(invite_template)
+    invite_template = convert_to_cmyk(invite_template)
+    resized_template = invite_template.resize((CONTENT_WIDTH, CONTENT_HEIGHT)).copy()
+
     guests = Guest.objects.all()
     invite_data, partners_done = [], set()
     for guest in guests:
@@ -124,7 +134,8 @@ def generate_invites(invite_template, current_site, protocol):
         invite_data.append(this_guest)
 
     for index, invitee in enumerate(invite_data):
-        base_image = invite_template.resize((WIDTH, HEIGHT)).copy()
+        base_image = Image.new("CMYK", (WIDTH, HEIGHT), (0, 0, 0, 0))
+        base_image.paste(resized_template, (MARGIN, MARGIN))
         image_object = ImageDraw.Draw(base_image)
         add_date_lines(image_object)
         add_title_text(image_object)
