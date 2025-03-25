@@ -72,7 +72,8 @@ class RSVPView(UpdateView):
                 main=guest.main,
                 dietaries = "; ".join(
                     [dietary.name for dietary in list(guest.dietaries.all())]
-                )
+                ),
+                absolute_uri=self.request.get_host()
             )
             # https://docs.djangoproject.com/en/4.2/topics/email/
             send_mail(
@@ -267,6 +268,7 @@ def generate_message(self, **kwargs):
     starter = kwargs.get("starter", "")
     main = kwargs.get("main", "")
     dietaries = kwargs.get("dietaries", [])
+    absolute_uri = kwargs.get("absolute_uri", "")
     if re.search("{{ rsvp_qr_code }}", merged_message):
         qr_options = QRCodeOptions(image_format="png", size="s")
         qr_url = make_qr_code_url(rsvp_url, qr_options)
@@ -298,12 +300,9 @@ def generate_message(self, **kwargs):
                 </tr>
             </table>
         """
-    merged_message = re.sub("{{ rsvp_details }}", merge_table, merged_message)
-    merged_message = re.sub(
-        "{{ wedding_website_link }", 
-        self.request.build_absolute_uri, 
-        merged_message
-    )
+        merged_message = re.sub("{{ rsvp_details }}", merge_table, merged_message)
+    website_link="<a href=\"" + absolute_uri + "\">here</a>"
+    merged_message = re.sub( "{{ wedding_website_link }}", website_link, merged_message)
     merged_message = re.sub("{{ first_name }}", first_name, merged_message)
     merged_message = re.sub("{{ rsvp_link }}", rsvp_url_html, merged_message)
     merged_message = mark_safe(merged_message)
