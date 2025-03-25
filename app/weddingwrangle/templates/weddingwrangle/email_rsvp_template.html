@@ -14,18 +14,28 @@
     <form action="" method="post" id="rsvp_email_template" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form|crispy }}
+      <a href="#" class="website-link" data-textpart="wedding_website_link">Add wedding website link</a>
       <a href="#" class="template-link" data-textpart="rsvp_details">Add RSVP details</a>
       <br>
       <input type="submit" value="save">
     </form>
   </p>
 
-
   {% verbatim %}
 
 <script>
   $(function () {
     $('.template-link').on('click', function () { 
+      var textbox = $("#id_text");      
+      var textpart = $(this).data('textpart');
+      var startPos = textbox[0].selectionStart;
+      var endPos = textbox[0].selectionEnd;
+      textbox.val(textbox.val().substring(0, startPos) + "{{ " + textpart + " }}"
+        + textbox.val().substring(endPos));
+    });
+  });
+  $(function () {
+    $('.website-link').on('click', function () { 
       var textbox = $("#id_text");      
       var textpart = $(this).data('textpart');
       var startPos = textbox[0].selectionStart;

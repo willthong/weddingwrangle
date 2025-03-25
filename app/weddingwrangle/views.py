@@ -298,7 +298,12 @@ def generate_message(self, **kwargs):
                 </tr>
             </table>
         """
-        merged_message = re.sub("{{ rsvp_details }}",merge_table,merged_message)
+    merged_message = re.sub("{{ rsvp_details }}", merge_table, merged_message)
+    merged_message = re.sub(
+        "{{ wedding_website_link }", 
+        self.request.build_absolute_uri, 
+        merged_message
+    )
     merged_message = re.sub("{{ first_name }}", first_name, merged_message)
     merged_message = re.sub("{{ rsvp_link }}", rsvp_url_html, merged_message)
     merged_message = mark_safe(merged_message)
