@@ -164,11 +164,7 @@ def load_attending_stats(date):
         .filter(rsvp_status__name="Declined")
         .count()
     )
-    pending = (
-        Guest.objects.filter(rsvp_at__lte=date)
-        .filter(rsvp_status__name="Pending")
-        .count()
-    )
+    pending = Guest.objects.filter(rsvp_at__isnull=True).count()
     total = attending + declined + pending
     return AttendingStats(date, attending, declined, pending, total)
 
