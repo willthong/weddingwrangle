@@ -138,7 +138,7 @@ class GuestDelete(LoginRequiredMixin, DeleteView):
 
 # Cleaner date generation with list comprehension
 def get_all_dates():
-    start_date = Guest.objects.aggregate(Min("created_at"))["created_at__min"]
+    start_date = Guest.objects.aggregate(Min("rsvp_at"))["rsvp_at__min"]
     days = (timezone.now() - start_date).days
     return [start_date + timedelta(days=day) for day in range(0, days + 1)]
 
