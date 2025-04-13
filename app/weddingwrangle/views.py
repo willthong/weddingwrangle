@@ -150,7 +150,6 @@ def load_attending_stats(date):
         date: date
         attending: int
         declined: int
-        pending: int
         total: int
 
     # Uses less than / equal to (lte) rather than previous approach of incrementing query_date
@@ -164,9 +163,8 @@ def load_attending_stats(date):
         .filter(rsvp_status__name="Declined")
         .count()
     )
-    pending = Guest.objects.filter(rsvp_at__isnull=True).count()
-    total = attending + declined + pending
-    return AttendingStats(date, attending, declined, pending, total)
+    total = Guest.objects.filter(created_at__lte=date).count()
+    return AttendingStats(date, attending, declined, total)
 
 
 def prepare_plot_data(attending_stats):
