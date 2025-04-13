@@ -165,7 +165,7 @@ def load_attending_stats(date):
         .count()
     )
     pending = (
-        Guest.objects.filter(created_at__lte=date)
+        Guest.objects.filter(rsvp_at__lte=date)
         .filter(rsvp_status__name="Pending")
         .count()
     )
