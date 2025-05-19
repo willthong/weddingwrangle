@@ -98,12 +98,12 @@ class GuestForm(forms.ModelForm):
             form_instance.rsvp_link = csv_import.generate_key()
         form_instance = rsvp_time_update(self, form_instance)
 
-        if (
-            # The form response rsvp_status is different to the the original record
-            (form_instance.rsvp_status.id != self.initial.get("rsvp_status"))
-            or (form_instance.position.id != self.initial.get("position"))
-        ):
-            form_instance = sync.sync_audience(form_instance)
+        is_new = form_instance.pk is None
+        if commit and is_new:
+            form_instance.save()
+            self.save_m2m()
+
+        form_instance = sync.sync_audience(form_instance)
 
         # Autogenerate reciprocal partner relationship
         form_instance = sync.sync_partner(form_instance)

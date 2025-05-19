@@ -451,6 +451,9 @@ def export_csv(response):
         if guest.partner != None:
             partner_first = guest.partner.first_name
             partner_surname = guest.partner.surname
+        else:
+            partner_first = ""
+            partner_surname = ""
         if guest.rsvp_at != None:
             rsvp_at = guest.rsvp_at.strftime("%Y-%m-%d %H:%M")
 
