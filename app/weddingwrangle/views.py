@@ -443,6 +443,8 @@ def export_csv(response):
             "RSVP at",
             "Partner first name",
             "Partner surname",
+            "Starter",
+            "Main",
             "Dietaries",
         ]
     )
@@ -471,6 +473,8 @@ def export_csv(response):
                 rsvp_at,
                 partner_first,
                 partner_surname,
+                guest.starter,
+                guest.main,
                 dietaries,
             ]
         )
